@@ -12,13 +12,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ArticleRequest;
+use App\Http\Requests\CreateArticleRequest;
+use App\Http\Requests\EditArticleRequest;
+use App\Http\Requests\RemoveArticleRequest;
 
 class ArticleController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['index', 'show'] ]);
+        $this->middleware('articleOwner', ['only' => ['edit', 'destroyConfirm']]);
     }
 
     /**
@@ -48,10 +51,10 @@ class ArticleController extends Controller
     /**
      * Store a article.
      *
-     * @param ArticleRequest $request
+     * @param CreateArticleRequest $request
      * @return Response
      */
-    public function store(ArticleRequest $request)
+    public function store(CreateArticleRequest $request)
     {
         $this->createArticle($request);
 
@@ -88,10 +91,10 @@ class ArticleController extends Controller
      * Update a article.
      *
      * @param Article $article
-     * @param ArticleRequest $request
+     * @param EditArticleRequest $request
      * @return Response
      */
-    public function update(Article $article, ArticleRequest $request)
+    public function update(Article $article, EditArticleRequest $request)
     {
         $article->update($request->all());
 
@@ -106,9 +109,10 @@ class ArticleController extends Controller
      * Remove a article.
      *
      * @param  Article $article
+     * @param  RemoveArticleRequest $request
      * @return Response
      */
-    public function destroy(Article $article)
+    public function destroy(Article $article, RemoveArticleRequest $request)
     {
         $article->delete();
 
@@ -151,9 +155,9 @@ class ArticleController extends Controller
     /**
      * Save a article.
      *
-     * @param ArticleRequest $request
+     * @param CreateArticleRequest $request
      */
-    private function createArticle(ArticleRequest $request)
+    private function createArticle(CreateArticleRequest $request)
     {
         $article = Auth::user()->articles()->create($request->all());
 

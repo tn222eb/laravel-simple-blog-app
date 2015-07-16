@@ -4,7 +4,7 @@
 
 @section('content')
 
-    @if (Auth::check())
+    @if (Auth::check() && Auth::user()->id == $article->user->id)
         <div class="form-group">
             {!! link_to_route('articles.edit', 'Edit', [$article->id], ['class' => 'btn btn-default']) !!}
             {!! link_to_route('articles.destroy.confirm', 'Delete', [$article->id], ['class' => 'btn btn-default']) !!}

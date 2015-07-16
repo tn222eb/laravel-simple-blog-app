@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Request;
 
-class ArticleRequest extends Request
+class RemoveArticleRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,8 @@ class ArticleRequest extends Request
      */
     public function authorize()
     {
-        return true;
+        $article = $this->route()->parameter('articles');
+        return Auth::user()->id == $article->user->id;
     }
 
     /**
@@ -24,10 +26,7 @@ class ArticleRequest extends Request
     public function rules()
     {
         return [
-            'title' => 'required|min:3',
-            'body' => 'required',
-            'published_at' => 'required|date',
-            'image' => 'required|image'
+            //
         ];
     }
 }

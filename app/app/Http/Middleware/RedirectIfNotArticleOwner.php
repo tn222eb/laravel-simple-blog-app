@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
-class RedirectIfNotAdmin
+class RedirectIfNotArticleOwner
 {
     /**
      * Handle an incoming request.
@@ -15,9 +16,11 @@ class RedirectIfNotAdmin
      */
     public function handle($request, Closure $next)
     {
-        if( ! $request->user()->isAdmin())
+        $article = $request->route()->parameter('articles');
+
+        if ($article->user->id != Auth::user()->id)
         {
-            return redirect('articles');
+            return redirect('/articles/' . $article->id);
         }
 
         return $next($request);
